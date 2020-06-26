@@ -1,0 +1,6 @@
+C:\Users\tshor\source\repos\ChessCSharp\obj\x86\Debug\ChessCSharp.csprojAssemblyReference.cache
+C:\Users\tshor\source\repos\ChessCSharp\obj\x86\Debug\ChessCSharp.csproj.CoreCompileInputs.cache
+C:\Users\tshor\source\repos\ChessCSharp\bin\Debug\ConsoleApplication.exe
+C:\Users\tshor\source\repos\ChessCSharp\bin\Debug\ConsoleApplication.pdb
+C:\Users\tshor\source\repos\ChessCSharp\obj\x86\Debug\ConsoleApplication.exe
+C:\Users\tshor\source\repos\ChessCSharp\obj\x86\Debug\ConsoleApplication.pdb
