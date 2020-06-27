@@ -75,7 +75,114 @@ namespace ChessCSharp
             cells[pieceX, pieceY].removePiece();
             cells[moveX, moveY].setCurrentPiece(currentPiece);
         }
+        public bool checkPiece(int pieceX, int pieceY, bool player, string side)
+        {
+            
+            if(cells[pieceX, pieceY].getCurrentPiece() != null)
+            {
+                char charSide = Convert.ToChar(side);
+                Piece piece = cells[pieceX, pieceY].getCurrentPiece();
+                char[] pieceSplit = piece.output().ToCharArray();
+                if(player == true & pieceSplit[1] == charSide)  // player 1
+                {
+                    return true;
+                }
+                else if (player == false & pieceSplit[1] != charSide) // player 2
+                {
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Please select the piece from your side.");
+                    return false;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Please select a piece.");
+                return false;
+            }
+        }
 
+        public bool checkMove(int moveX, int moveY, int pieceX, int pieceY)
+        {
+            Piece currentPiece = cells[pieceX, pieceY].getCurrentPiece();
+            char[] piece = currentPiece.output().ToCharArray();
+            Piece attackPawn = cells[moveX, moveY].getCurrentPiece();
+
+            if (piece[0] == 'P')
+            {
+
+                if (piece[1] == 'b' && pieceY != 1)
+                {
+                    if((moveY - pieceY) == 1)
+                    {
+                        if ((moveX - pieceX) == 0 && attackPawn == null)
+                        {
+                            return true;
+                        }
+                        else if (((moveX - pieceX) == 1 && attackPawn != null) || ((moveX - pieceX) == -1 && attackPawn != null)) // Can take own pawns
+                        {
+                            return true;
+                        }
+                    }
+                }
+                else if (piece[1] == 'b' && pieceY == 1)
+                {
+                    if((moveY - pieceY) < 3 && (moveX - pieceX) == 0)
+                    {
+                        return true;
+                    }
+                }
+                else if (piece[1] == 'w' && pieceY != 6) // or 7 or 8
+                {
+                    if ((pieceY - moveY) == 1)
+                    {
+                        if ((pieceX - moveX) == 0 && attackPawn == null)
+                        {
+                            return true;
+                        }
+                        else if (((pieceX - moveX) == 1 && attackPawn != null) || ((pieceX - moveX) == -1 && attackPawn != null)) // Can take own pawns
+                        {
+                            return true;
+                        }
+                    }
+                }
+                else if (piece[1] == 'w' && pieceY == 6)
+                {
+                    if ((pieceY - moveY) < 3 && (moveX - pieceX) == 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+         /*   else if (piece[0] == 'K')
+            {
+
+            }
+            else if (piece[0] == 'Q')
+            {
+
+            }
+            else if (piece[0] == 'B')
+            {
+
+            }
+            else if (piece[0] == 'K')
+            {
+
+            }
+            else if (piece[0] == 'R')
+            {
+
+            }*/
+            else return false;
+            Console.WriteLine("Please select a valid move.");
+            return false;
+            
+
+        }
+     
 
     }
 }
