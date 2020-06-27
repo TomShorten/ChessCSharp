@@ -156,26 +156,35 @@ namespace ChessCSharp
                     }
                 }
             }
-         /*   else if (piece[0] == 'K')
-            {
-
-            }
-            else if (piece[0] == 'Q')
-            {
-
-            }
-            else if (piece[0] == 'B')
-            {
-
-            }
             else if (piece[0] == 'K')
             {
-
+                if(((moveY - pieceY) == 1 || (moveY - pieceY) == 0 || (moveY - pieceY) == -1) && ((moveX - pieceX) == 1 || (moveX - pieceX) == 0 || (moveX - pieceX) == -1))
+                {
+                    return true;
+                }
             }
-            else if (piece[0] == 'R')
+           /* else if (piece[0] == 'Q')
             {
 
             }*/
+            else if (piece[0] == 'B')
+            {
+                if ((moveY - pieceY) == (moveX - pieceX))
+                {
+                    return true;
+                }
+            }
+            /*  else if (piece[0] == 'N')
+              {
+
+              }*/
+            else if (piece[0] == 'R')
+             {
+                if ((System.Math.Abs(moveY - pieceY) > 0 && (moveX - pieceX) == 0) || ((moveY - pieceY) == 0 && System.Math.Abs(moveX - pieceX) > 0)) // needs modulus
+                {
+                    return true;
+                }
+            }
             else return false;
             Console.WriteLine("Please select a valid move.");
             return false;
