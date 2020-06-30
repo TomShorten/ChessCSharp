@@ -6,6 +6,7 @@ namespace ChessCSharp
     {
         private int sizeX, sizeY;
         private BoardCell[,] cells;
+        private int nrOfPw, nrOfPb;
 
         public Board()
         {
@@ -16,7 +17,8 @@ namespace ChessCSharp
         }
         public void drawBoard()
         {
-            Console.WriteLine("  A    B    C    D    E    F    G    H");
+            numberOfPieces();
+            Console.WriteLine("  A    B    C    D    E    F    G    H " + "   Number of black pieces: " + nrOfPb);
             for (int y = 0; y < sizeY; y++)
             {
                 Console.WriteLine("-----------------------------------------");
@@ -30,7 +32,16 @@ namespace ChessCSharp
 
                 }
             }
-            Console.WriteLine("-----------------------------------------");
+            Console.WriteLine("----------------------------------------- Number of white pieces: " + nrOfPw);
+            if(checkCheck())
+            {
+                Console.WriteLine("In check");
+            }
+            else
+            {
+                Console.WriteLine("Not in check");
+            }
+            
         }
         private void createCells()
         {
@@ -109,89 +120,202 @@ namespace ChessCSharp
             Piece currentPiece = cells[pieceX, pieceY].getCurrentPiece();
             char[] piece = currentPiece.output().ToCharArray();
             Piece attackPawn = cells[moveX, moveY].getCurrentPiece();
-
-            if (piece[0] == 'P')
+            char[] attackPiece;
+            if (attackPawn != null )
             {
-
-                if (piece[1] == 'b' && pieceY != 1)
+                attackPiece = attackPawn.output().ToCharArray();
+            }
+            else
+            {
+                attackPiece = "noPiece".ToCharArray();
+            }
+            if ((piece[1] == 'w' && attackPiece[1] == 'w') || (piece[1] == 'b' && attackPiece[1] == 'b'))
+            {
+                return false;
+            }
+            else
+            {
+                if (piece[0] == 'P')
                 {
-                    if((moveY - pieceY) == 1)
+
+                    if (piece[1] == 'b' && pieceY != 1)
                     {
-                        if ((moveX - pieceX) == 0 && attackPawn == null)
+                        if ((moveY - pieceY) == 1)
+                        {
+                            if ((moveX - pieceX) == 0 && attackPawn == null)
+                            {
+                                return true;
+                            }
+                            else if (((moveX - pieceX) == 1 && attackPawn != null) || ((moveX - pieceX) == -1 && attackPawn != null)) // Can take own pawns
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                    else if (piece[1] == 'b' && pieceY == 1)
+                    {
+                        if ((moveY - pieceY) < 3 && (moveX - pieceX) == 0)
                         {
                             return true;
                         }
-                        else if (((moveX - pieceX) == 1 && attackPawn != null) || ((moveX - pieceX) == -1 && attackPawn != null)) // Can take own pawns
+                    }
+                    else if (piece[1] == 'w' && pieceY != 6) // or 7 or 8
+                    {
+                        if ((pieceY - moveY) == 1)
+                        {
+                            if ((pieceX - moveX) == 0 && attackPawn == null)
+                            {
+                                return true;
+                            }
+                            else if (((pieceX - moveX) == 1 && attackPawn != null) || ((pieceX - moveX) == -1 && attackPawn != null)) // Can take own pawns
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                    else if (piece[1] == 'w' && pieceY == 6)
+                    {
+                        if ((pieceY - moveY) < 3 && (moveX - pieceX) == 0)
                         {
                             return true;
                         }
                     }
                 }
-                else if (piece[1] == 'b' && pieceY == 1)
+                else if (piece[0] == 'K')
                 {
-                    if((moveY - pieceY) < 3 && (moveX - pieceX) == 0)
+                    if (((moveY - pieceY) == 1 || (moveY - pieceY) == 0 || (moveY - pieceY) == -1) && ((moveX - pieceX) == 1 || (moveX - pieceX) == 0 || (moveX - pieceX) == -1))
                     {
                         return true;
                     }
                 }
-                else if (piece[1] == 'w' && pieceY != 6) // or 7 or 8
+                else if (piece[0] == 'Q')
                 {
-                    if ((pieceY - moveY) == 1)
+                    if ((System.Math.Abs(moveY - pieceY) > 0 && (moveX - pieceX) == 0) || ((moveY - pieceY) == 0 && System.Math.Abs(moveX - pieceX) > 0) || ((moveY - pieceY) == (moveX - pieceX)))
                     {
-                        if ((pieceX - moveX) == 0 && attackPawn == null)
-                        {
-                            return true;
-                        }
-                        else if (((pieceX - moveX) == 1 && attackPawn != null) || ((pieceX - moveX) == -1 && attackPawn != null)) // Can take own pawns
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
-                else if (piece[1] == 'w' && pieceY == 6)
+                else if (piece[0] == 'B')
                 {
-                    if ((pieceY - moveY) < 3 && (moveX - pieceX) == 0)
+                    if (System.Math.Abs(moveY - pieceY) == System.Math.Abs(moveX - pieceX))
+                    {
+                        return true;
+                    }
+                }
+                else if (piece[0] == 'N')
+                {
+                    if ((System.Math.Abs(moveY - pieceY) == 2 && System.Math.Abs(moveX - pieceX) == 1) || (System.Math.Abs(moveX - pieceX) == 2 && System.Math.Abs(moveY - pieceY) == 1))
+                    {
+                        return true;
+                    }
+                }
+                else if (piece[0] == 'R')
+                {
+                    if ((System.Math.Abs(moveY - pieceY) > 0 && (moveX - pieceX) == 0) || ((moveY - pieceY) == 0 && System.Math.Abs(moveX - pieceX) > 0))
                     {
                         return true;
                     }
                 }
             }
-            else if (piece[0] == 'K')
-            {
-                if(((moveY - pieceY) == 1 || (moveY - pieceY) == 0 || (moveY - pieceY) == -1) && ((moveX - pieceX) == 1 || (moveX - pieceX) == 0 || (moveX - pieceX) == -1))
-                {
-                    return true;
-                }
-            }
-           /* else if (piece[0] == 'Q')
-            {
-
-            }*/
-            else if (piece[0] == 'B')
-            {
-                if ((moveY - pieceY) == (moveX - pieceX))
-                {
-                    return true;
-                }
-            }
-            /*  else if (piece[0] == 'N')
-              {
-
-              }*/
-            else if (piece[0] == 'R')
-             {
-                if ((System.Math.Abs(moveY - pieceY) > 0 && (moveX - pieceX) == 0) || ((moveY - pieceY) == 0 && System.Math.Abs(moveX - pieceX) > 0)) // needs modulus
-                {
-                    return true;
-                }
-            }
-            else return false;
             Console.WriteLine("Please select a valid move.");
             return false;
             
 
         }
-     
+        public void numberOfPieces()
+        {
+            nrOfPw = 0;
+            nrOfPb = 0;
+            for (int y = 0; y < sizeY; y++)
+            {
+                for (int x = 0; x < sizeX; x++)
+                {
+                    if (cells[x, y].getCurrentPiece() != null)
+                    {
+                        Piece thisPiece = cells[x, y].getCurrentPiece();
+                        char[] thisPieceColour = thisPiece.output().ToCharArray();
 
+                        if (thisPieceColour[1] == 'w')
+                        {
+                            nrOfPw++;
+
+                        }
+                        else
+                        {
+                            nrOfPb++;
+                        }
+                    }
+
+                }
+            }
+        }
+
+        public bool checkCheck()
+        {
+            for (int y = 0; y < sizeY; y++)
+            {
+                for (int x = 0; x < sizeX; x++)
+                {
+                    Piece thisPiece = cells[x, y].getCurrentPiece();
+                    if(thisPiece != null)
+                    {
+                        char[] thisPieceColour = thisPiece.output().ToCharArray();
+                        if (thisPieceColour[0] == 'K') // x any y now fixed at kings position
+                        {
+                            for (int j = 0; j < 8; j++)
+                            {
+                                for (int i = 0; i < 8; i++)
+                                {
+                                    if (cells[i, j].getCurrentPiece() != null)
+                                    {
+                                        char[] currentPiece = cells[i, j].getCurrentPiece().output().ToCharArray();
+                                        if (currentPiece[0] == 'Q' && thisPieceColour[1] != currentPiece[1])
+                                        {
+                                            if ((System.Math.Abs(x - i) == System.Math.Abs(y - j)) || ((System.Math.Abs(x - i) > 0 && System.Math.Abs(y - j) == 0)) || ((System.Math.Abs(y - j) > 0 && System.Math.Abs(x - i) == 0)))
+                                            {
+                                                return true;
+                                            }
+                                        }
+                                        else if (currentPiece[0] == 'B' && thisPieceColour[1] != currentPiece[1])
+                                        {
+                                            if (System.Math.Abs(x - i) == System.Math.Abs(y - j))
+                                            {
+                                                return true;
+                                            }
+                                        }
+                                        else if (currentPiece[0] == 'R' && thisPieceColour[1] != currentPiece[1])
+                                        {
+                                            if (((System.Math.Abs(x - i) > 0 && System.Math.Abs(y - j) == 0)) || ((System.Math.Abs(y - j) > 0 && System.Math.Abs(x - i) == 0)))
+                                            {
+                                                return true;
+                                            }
+                                        }
+                                        else if (currentPiece[0] == 'N' && thisPieceColour[1] != currentPiece[1])
+                                        {
+                                            if ((System.Math.Abs(x - i) == 2 && System.Math.Abs(y - j) == 1) || (System.Math.Abs(y - j) == 2 && System.Math.Abs(x - i) == 1))
+                                            {
+                                                return true;
+                                            }
+                                        }
+                                        else if (currentPiece[0] == 'K' && thisPieceColour[1] != currentPiece[1])
+                                        {
+                                            if ((System.Math.Abs(x - i) < 2 && (System.Math.Abs(x - i) == System.Math.Abs(y - j))) || ((System.Math.Abs(x - i) == 1 && System.Math.Abs(y - j) == 0)) || ((System.Math.Abs(y - j) == 1 && System.Math.Abs(x - i) == 0)))
+                                            {
+                                                return true;
+                                            }
+                                        }
+                                        /* pawn needed */
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                    
+
+                }
+            }
+            return false;
+        }
     }
 }
